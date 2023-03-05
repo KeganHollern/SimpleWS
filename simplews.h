@@ -1,5 +1,5 @@
-#ifndef SIMPLEWS_LIBRARY_H
-#define SIMPLEWS_LIBRARY_H
+#ifndef SIMPLEWS_SIMPLEWS_H
+#define SIMPLEWS_SIMPLEWS_H
 
 typedef void* sws_client;
 typedef void* sws_server;
@@ -37,4 +37,4 @@ extern "C" {
 #ifdef __cplusplus
 };
 #endif
-#endif //SIMPLEWS_LIBRARY_H
+#endif //SIMPLEWS_SIMPLEWS_H
