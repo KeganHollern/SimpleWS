@@ -65,11 +65,38 @@ public:
 private:
 
     void onOpen(Connection conn) {
+        {
+            std::lock_guard<std::mutex> lock(this->connectionListMutex);
+            this->connections.push_back(conn);
+        }
+
         if(this->onConnectCallback) {
             this->onConnectCallback(&conn);
         }
     }
     void onClose(Connection conn) {
+        {
+            std::lock_guard<std::mutex> lock(this->connectionListMutex);
+
+            auto connVal = conn.lock();
+            auto newEnd = std::remove_if(this->connections.begin(), this->connections.end(), [&connVal](Connection elem)
+            {
+                //if pointer has expired
+                if (elem.expired()) {
+                    return true;
+                }
+
+                //if this is our closed connection
+                auto elemVal = elem.lock();
+                if (elemVal.get() == connVal.get()) {
+                    return true;
+                }
+
+                return false;
+            });
+            this->connections.resize(std::distance(connections.begin(), newEnd));
+        }
+
         if(this->onDisconnectCallback) {
             this->onDisconnectCallback(&conn);
         }
